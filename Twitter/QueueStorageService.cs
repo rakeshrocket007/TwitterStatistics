@@ -9,7 +9,7 @@ namespace JH.Twitter
     /// <typeparam name="T"></typeparam>
     public class QueueStorageService<T> : IQueueStorageService<T>
     {
-        private Queue<T> messages = new Queue<T>();
+        private static Queue<T> messages = new Queue<T>();
 
         /// <summary>
         /// Add data to the queue that need to be processed

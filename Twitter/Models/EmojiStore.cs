@@ -47,7 +47,7 @@ namespace JH.Twitter
                     var utf32Number = Convert.ToInt32(value, 16);
                     unifiedCh = char.ConvertFromUtf32(utf32Number);
                 }
-                catch (Exception ex) { unifiedCh = "-1"; }
+                catch { unifiedCh = "-1"; }
             }
             
         }
