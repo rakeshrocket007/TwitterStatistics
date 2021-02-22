@@ -42,6 +42,7 @@ namespace JH.Twitter
                 result.Add("Top Domain in tweets", _statistics.DomainUsage.Count > 0 ? _statistics.DomainUsage.Aggregate((l, r) => l.Value > r.Value ? l : r).Key : string.Empty);
 
                 float emojiPercentage = (_statistics.TweetCountWithEmojis * 100.0f) / _statistics.TweetCount;
+                result.Add("Total tweets with emojis", _statistics.TweetCountWithEmojis.ToString());
                 result.Add("Percentage of tweets with emojis", Math.Round(emojiPercentage, 2).ToString());
 
                 float urlPercentage = (_statistics.TweetCountWithUrl * 100.0f) / _statistics.TweetCount;

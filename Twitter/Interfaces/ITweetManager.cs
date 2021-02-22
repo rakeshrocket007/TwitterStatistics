@@ -5,7 +5,7 @@ namespace JH.Twitter
 {
     public interface ITweetManager<T>
     {
-        Task InitiateQueueService(string endpoint);
+        void InitiateQueueService(string endpoint);
 
         void ProcessQueueService(IMessageProcessor messageProcessor);
     }

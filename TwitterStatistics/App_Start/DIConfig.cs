@@ -2,8 +2,11 @@
 using Autofac.Integration.WebApi;
 using JH.Twitter;
 using JH.Twitter.Analytics;
+using JH.Twitter.Helpers;
+using JH.Twitter.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -41,7 +44,11 @@ namespace TwitterStatistics
         {
             builder.RegisterType<QueueStorageService<TwitterStreamResponse>>().As<IQueueStorageService<TwitterStreamResponse>>().SingleInstance();
             builder.RegisterType<TwitterStatisticsModel>().As<TwitterStatisticsModel>().SingleInstance();
-            
+
+            builder.RegisterType<Log4netLogger>().As<ILogger>();
+            builder.Register((c, p) => new EmojiStore(c.Resolve<ILogger>(), ConfigurationManager.AppSettings["EmojiStore"].ToString()))
+                .As<IEmojiStore>().SingleInstance();
+
             builder.RegisterType<TwitterMetadata>().As<TwitterMetadata>();
             builder.RegisterType<TwitterRepository>().As<ITwitterRepository>();
             builder.RegisterType<MessageProcessor>().As<IMessageProcessor>();

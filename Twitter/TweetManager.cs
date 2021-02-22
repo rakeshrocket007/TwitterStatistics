@@ -1,4 +1,5 @@
 ﻿using JH.Twitter.Analytics;
+using JH.Twitter.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,17 +18,18 @@ namespace JH.Twitter
     {
         private ITwitterRepository _repository;
         private IQueueStorageService<T> _queueStorageService;
-        private static readonly log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private ILogger _log;
 
         /// <summary>
         /// Consturctor for the class which takes in ITwitterRepository and QueueStorageService
         /// </summary>
         /// <param name="repository"></param>
         /// <param name="queueStorageService"></param>
-        public TweetManager(ITwitterRepository repository, IQueueStorageService<T> queueStorageService)
+        public TweetManager(ITwitterRepository repository, IQueueStorageService<T> queueStorageService, ILogger logger)
         {
             _repository = repository;
             _queueStorageService = queueStorageService;
+            _log = logger;
         }
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace JH.Twitter
         /// </summary>
         /// <param name="endpoint">endpoint from where the data has to be read</param>
         /// <returns></returns>
-        public async Task InitiateQueueService(string endpoint)
+        public void InitiateQueueService(string endpoint)
         {
             try
             {
@@ -49,7 +51,7 @@ namespace JH.Twitter
             catch(Exception ex)
             {
                 _log.Error("Error occured during Fetching twitter data and writing to the Queue. " + ex.Message);
-                throw;
+                throw ex.InnerException;
             }
         }
 

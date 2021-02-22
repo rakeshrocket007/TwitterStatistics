@@ -1,5 +1,7 @@
-﻿using System;
+﻿using JH.Twitter.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -11,15 +13,19 @@ namespace JH.Twitter.Analytics
     public class MessageProcessor : IMessageProcessor
     {
         private TwitterStatisticsModel _statistics;
-        private static readonly log4net.ILog _log = log4net.LogManager.GetLogger("MessageProcessor");
+        private ILogger _log;
+        private IEmojiStore _emojiStore;
 
         /// <summary>
         /// Constructor for the class that takes in the Statistics store.
         /// </summary>
-        /// <param name="statistics"></param>
-        public MessageProcessor(TwitterStatisticsModel statistics)
+        /// <param name="emojiStore">Contains list of emojis</param>
+        /// <param name="statistics">Statistics model</param>
+        public MessageProcessor(IEmojiStore emojiStore, ILogger log, TwitterStatisticsModel statistics)
         {
             _statistics = statistics;
+            _log = log;
+            _emojiStore = emojiStore;
         }
 
         /// <summary>
@@ -57,8 +63,18 @@ namespace JH.Twitter.Analytics
 
                 // photos
                 _statistics.TweetCountWithPhoto += input.data.text.Contains("pic.twitter.com") ? 1 : 0;
+                _statistics.TweetCountWithPhoto += input.data.text.Contains("pic.") ? 1 : 0;
 
                 // TBD emoji count
+                var emojiOccurence = FindEmojis(input.data.text);
+                _statistics.TweetCountWithEmojis += emojiOccurence.Count == 0 ? 0 : 1;
+                foreach (var occurence in emojiOccurence)
+                {
+                    if (_statistics.EmojiUsage.ContainsKey(occurence))
+                        _statistics.EmojiUsage[occurence] += 1;
+                    else
+                        _statistics.EmojiUsage.Add(occurence, 1);
+                }
             }
             catch (Exception ex)
             {
@@ -84,6 +100,21 @@ namespace JH.Twitter.Analytics
                 result.Add(m.Value);
             }
             return result;
+        }
+
+        /// <summary>
+        /// Get list of emojis from the text
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private List<string> FindEmojis(string text)
+        {
+            var emojisInTweet = _emojiStore.items.Where(e => text.Contains(e.unifiedCh));
+            if(emojisInTweet != null && emojisInTweet.Count() > 0)
+            {
+                return emojisInTweet.Select(e => e.name).ToList();
+            }
+            return new List<string>();
         }
     }
 }

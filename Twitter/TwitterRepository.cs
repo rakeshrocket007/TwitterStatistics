@@ -43,7 +43,7 @@ namespace JH.Twitter
             }
             catch (Exception ex)
             {
-                _log.Error("Error occured during initiating the call to the Twitter service." + ex.Message);
+                _log.Error("Error occured during initiating the call to the Twitter service." + ex.InnerException.Message);
                 throw;
             }
         }

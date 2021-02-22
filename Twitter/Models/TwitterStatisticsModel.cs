@@ -17,7 +17,9 @@ namespace JH.Twitter
         public int TweetCountWithUrl { get; set; }
 
         public int TweetCountWithPhoto { get; set; }
-                
+
+        public int TweetCountWithPhotoTemp { get; set; }
+
         public Dictionary<string, int> EmojiUsage { get; set; } = new Dictionary<string, int>();
 
         public Dictionary<string, int> HashTagUsage { get; set; } = new Dictionary<string, int>();
