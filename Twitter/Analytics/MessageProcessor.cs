@@ -12,7 +12,7 @@ namespace JH.Twitter.Analytics
     /// </summary>
     public class MessageProcessor : IMessageProcessor
     {
-        private TwitterStatisticsModel _statistics;
+        public TwitterStatisticsModel _statistics { get; private set; }
         private ILogger _log;
         private IEmojiStore _emojiStore;
 
